@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KhaanaPeena - Checkout</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function CheckoutApp() {
+            const [formData, setFormData] = React.useState({
+                name: '',
+                phone: '',
+                address: '',
+                paymentMethod: 'card'
+            });
+
+            const handleInputChange = (e) => {
+                setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.value
+                });
+            };
+
+            const getCart = () => JSON.parse(localStorage.getItem('khaanapeena_cart') || '{"items":[],"restaurantId":null,"restaurantName":null}');
+
+            const placeOrder = () => {
+                if (!formData.name || !formData.phone || !formData.address) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+
+                const cart = getCart();
+                if (cart.items.length === 0) {
+                    alert('Your cart is empty');
+                    return;
+                }
+
+                const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const deliveryFee = 40;
+                const taxes = Math.round(subtotal * 0.05);
+                const total = subtotal + deliveryFee + taxes;
+
+                const order = {
+                    id: Date.now(),
+                    items: cart.items,
+                    restaurantId: cart.restaurantId,
+                    restaurantName: cart.restaurantName,
+                    customer: formData,
+                    total: total,
+                    status: 'confirmed',
+                    timestamp: new Date().toISOString()
+                };
+
+                const orders = JSON.parse(localStorage.getItem('khaanapeena_orders') || '[]');
+                orders.push(order);
+                localStorage.setItem('khaanapeena_orders', JSON.stringify(orders));
+
+                // Clear cart
+                localStorage.setItem('khaanapeena_cart', '{"items":[],"restaurantId":null,"restaurantName":null}');
+
+                // Redirect to orders page
+                window.location.href = 'orders.html';
+            };
+
+            const cart = getCart();
+            const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = subtotal > 0 ? 40 : 0;
+            const taxes = Math.round(subtotal * 0.05);
+            const total = subtotal + deliveryFee + taxes;
+
+            if (cart.items.length === 0) {
+                return (
+                    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="text-6xl mb-4">🛒</div>
+                            <h2 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
+                            <p className="text-gray-500 mb-6">Add some delicious food to get started!</p>
+                            <a href="index.html" className="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-semibold">
+                                Continue Shopping
+                            </a>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <header className="bg-white border-b border-gray-100 sticky top-0 z-40">
+                        <div className="max-w-6xl mx-auto px-4 py-4">
+                            <div className="flex items-center justify-between">
+                                <a href="cart.html" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+                                    ← <span className="font-medium">Back to Cart</span>
+                                </a>
+                                <div className="flex items-center gap-4">
+                                    <a href="index.html" className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
+                                        Home 🏠
+                                    </a>
+                                    <a href="orders.html" className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
+                                        Orders 📦
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="max-w-6xl mx-auto px-4 py-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="space-y-6">
+                                <div className="bg-white rounded-2xl p-6 border border-gray-100">
+                                    <h2 className="text-xl font-bold text-gray-900 mb-4">Delivery Details</h2>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value={formData.name}
+                                                onChange={handleInputChange}
+                                                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                                placeholder="Enter your full name"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                                            <input
+                                                type="tel"
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={handleInputChange}
+                                                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                                placeholder="Enter your phone number"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Address *</label>
+                                            <textarea
+                                                name="address"
+                                                value={formData.address}
+                                                onChange={handleInputChange}
+                                                rows="3"
+                                                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                                placeholder="Enter your complete delivery address"
+                                            ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white rounded-2xl p-6 border border-gray-100">
+                                    <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Method</h2>
+                                    <div className="space-y-3">
+                                        <label className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="paymentMethod"
+                                                value="card"
+                                                checked={formData.paymentMethod === 'card'}
+                                                onChange={handleInputChange}
+                                                className="text-orange-500 focus:ring-orange-500"
+                                            />
+                                            <span className="ml-3">💳 Credit/Debit Card</span>
+                                        </label>
+                                        <label className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="paymentMethod"
+                                                value="upi"
+                                                checked={formData.paymentMethod === 'upi'}
+                                                onChange={handleInputChange}
+                                                className="text-orange-500 focus:ring-orange-500"
+                                            />
+                                            <span className="ml-3">📱 UPI</span>
+                                        </label>
+                                        <label className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="paymentMethod"
+                                                value="cash"
+                                                checked={formData.paymentMethod === 'cash'}
+                                                onChange={handleInputChange}
+                                                className="text-orange-500 focus:ring-orange-500"
+                                            />
+                                            <span className="ml-3">💵 Cash on Delivery</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div className="bg-white rounded-2xl p-6 border border-gray-100">
+                                    <h2 className="text-xl font-bold text-gray-900 mb-4">Order Summary</h2>
+                                    <div className="space-y-3 mb-4">
+                                        {cart.items.map((item) => (
+                                            <div key={item.id} className="flex justify-between items-center">
+                                                <div className="flex items-center gap-3">
+                                                    <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover" />
+                                                    <div>
+                                                        <p className="font-medium text-gray-900">{item.name}</p>
+                                                        <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                                                    </div>
+                                                </div>
+                                                <span className="font-semibold">₹{item.price * item.quantity}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <hr className="my-4" />
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between">
+                                            <span>Subtotal</span>
+                                            <span>₹{subtotal}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Delivery Fee</span>
+                                            <span>₹{deliveryFee}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Taxes</span>
+                                            <span>₹{taxes}</span>
+                                        </div>
+                                        <hr className="my-2" />
+                                        <div className="flex justify-between text-lg font-bold">
+                                            <span>Total</span>
+                                            <span>₹{total}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={placeOrder}
+                                    className="w-full py-4 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-bold text-lg"
+                                >
+                                    Place Order - ₹{total}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<CheckoutApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>

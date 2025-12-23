@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KhaanaPeena - Food Delivery</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Mock data
+        const restaurants = [
+            {
+                id: '1',
+                name: 'The Food Studio',
+                cuisine: 'North Indian & Asian',
+                description: 'A glass-walled dining room serving North Indian and Asian seafood platters, known for its good ambiance and food',
+                image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop',
+                rating: 4.3,
+                delivery_time: '30-35 mins'
+            },
+            {
+                id: '2',
+                name: '180 Degrees',
+                cuisine: 'International',
+                description: 'Located at the Radisson Mumbai, this restaurant offers an international menu and is highly rated for a great experience',
+                image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop',
+                rating: 4.5,
+                delivery_time: '25-30 mins'
+            },
+            {
+                id: '3',
+                name: 'Sigree Global Grill',
+                cuisine: 'Barbecue & Indian',
+                description: 'Known for its barbecue and Indian cuisine, it receives praise for its amazing starters',
+                image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop',
+                rating: 4.4,
+                delivery_time: '20-25 mins'
+            },
+            {
+                id: '4',
+                name: '1441 Pizzeria',
+                cuisine: 'Italian',
+                description: 'A popular choice for Italian and unique pizzas, offering a pleasant dining experience',
+                image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop',
+                rating: 4.2,
+                delivery_time: '15-20 mins'
+            },
+            {
+                id: '5',
+                name: 'Made in Punjab',
+                cuisine: 'North Indian',
+                description: 'Offers a taste of authentic North Indian cuisine, including butter chicken and lassi',
+                image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop',
+                rating: 4.6,
+                delivery_time: '25-30 mins'
+            },
+            {
+                id: '6',
+                name: 'The Irish House Malad',
+                cuisine: 'Pub Fare',
+                description: 'A great spot for pub fare and drinks with a good atmosphere',
+                image: 'https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=400&h=300&fit=crop',
+                rating: 4.1,
+                delivery_time: '20-25 mins'
+            }
+        ];
+
+        // Popular items from each restaurant
+        const popularItems = [
+            { id: '1', restaurant_id: '1', name: 'Chicken Tikka Kebab', price: 280, image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=200&h=150&fit=crop', is_veg: false },
+            { id: '2', restaurant_id: '2', name: 'Grilled Salmon', price: 520, image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&h=150&fit=crop', is_veg: false },
+            { id: '3', restaurant_id: '3', name: 'Chicken Malai Tikka', price: 320, image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=200&h=150&fit=crop', is_veg: false },
+            { id: '4', restaurant_id: '4', name: 'Margherita Pizza', price: 320, image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&h=150&fit=crop', is_veg: true },
+            { id: '5', restaurant_id: '5', name: 'Butter Chicken', price: 340, image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=200&h=150&fit=crop', is_veg: false },
+            { id: '6', restaurant_id: '6', name: 'Fish and Chips', price: 350, image: 'https://images.unsplash.com/photo-1579208570378-8c970854bc23?w=200&h=150&fit=crop', is_veg: false }
+        ];
+
+        function App() {
+            const [searchQuery, setSearchQuery] = React.useState('');
+            const [cart, setCart] = React.useState([]);
+
+            // Load cart from localStorage on mount
+            React.useEffect(() => {
+                const savedCart = JSON.parse(localStorage.getItem('khaanapeena_cart') || '{"items":[]}');
+                setCart(savedCart.items || []);
+            }, []);
+
+            const addToCart = (item) => {
+                const newCart = [...cart];
+                const existingIndex = newCart.findIndex(cartItem => cartItem.id === item.id);
+
+                if (existingIndex > -1) {
+                    newCart[existingIndex].quantity += 1;
+                } else {
+                    newCart.push({ ...item, quantity: 1 });
+                }
+
+                setCart(newCart);
+                localStorage.setItem('khaanapeena_cart', JSON.stringify({ items: newCart }));
+
+                // Show success message
+                alert(`${item.name} added to cart!`);
+            };
+
+            const getCartItemCount = () => {
+                return cart.reduce((total, item) => total + item.quantity, 0);
+            };
+
+            const filteredRestaurants = restaurants.filter(r =>
+                r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                r.cuisine.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+
+            return (
+                <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+                    {/* Header */}
+                    <header className="bg-white border-b border-gray-100 sticky top-0 z-40">
+                        <div className="max-w-7xl mx-auto px-4 py-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                                        🍽️
+                                    </div>
+                                    <div>
+                                        <h1 className="text-xl font-bold text-gray-900">KhaanaPeena</h1>
+                                        <p className="text-xs text-gray-500 flex items-center gap-1">
+                                            📍 Mumbai
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <a href="cart.html" className="relative text-gray-600 hover:text-gray-900 transition-colors font-medium flex items-center gap-2">
+                                        <span>Cart</span>
+                                        <span className="text-lg">🛒</span>
+                                        {getCartItemCount() > 0 && (
+                                            <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                                                {getCartItemCount()}
+                                            </span>
+                                        )}
+                                    </a>
+                                    <a href="orders.html" className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
+                                        Orders 📦
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Search */}
+                    <div className="max-w-7xl mx-auto px-4 py-6">
+                        <div className="relative mb-6">
+                            <input
+                                type="text"
+                                placeholder="Search for restaurants, cuisine, or dishes..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg"
+                            />
+                            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                🔍
+                            </div>
+                        </div>
+
+                        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                            {searchQuery ? `Search results for "${searchQuery}"` : 'Popular Restaurants'}
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredRestaurants.map((restaurant) => {
+                                const popularItem = popularItems.find(item => item.restaurant_id === restaurant.id);
+                                return (
+                                    <div key={restaurant.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow fade-in">
+                                        <div className="relative">
+                                            <img
+                                                src={restaurant.image}
+                                                alt={restaurant.name}
+                                                className="w-full h-48 object-cover"
+                                            />
+                                            <div className="absolute top-3 right-3 bg-white px-2 py-1 rounded-lg shadow-sm">
+                                                <div className="flex items-center gap-1">
+                                                    <span className="text-sm font-semibold text-gray-900">{restaurant.rating}</span>
+                                                    <span className="text-yellow-400">⭐</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="p-4">
+                                            <h3 className="text-lg font-bold text-gray-900 mb-1">{restaurant.name}</h3>
+                                            <p className="text-sm text-gray-600 mb-2">{restaurant.cuisine}</p>
+                                            <p className="text-sm text-gray-500 mb-3 line-clamp-2">{restaurant.description}</p>
+
+                                            {popularItem && (
+                                                <div className="border-t border-gray-100 pt-3 mb-3">
+                                                    <div className="flex items-center gap-3 mb-2">
+                                                        <img src={popularItem.image} alt={popularItem.name} className="w-12 h-12 rounded-lg object-cover" />
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-medium text-gray-900 truncate">{popularItem.name}</p>
+                                                            <p className="text-sm font-bold text-gray-900">₹{popularItem.price}</p>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => addToCart(popularItem)}
+                                                            className="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors font-semibold"
+                                                        >
+                                                            ADD
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm text-gray-500">🕒 {restaurant.delivery_time}</span>
+                                                <a
+                                                    href={`menu.html?id=${restaurant.id}`}
+                                                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-semibold text-sm"
+                                                >
+                                                    View Menu
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {filteredRestaurants.length === 0 && (
+                            <div className="text-center py-12">
+                                <div className="text-6xl mb-4">🔍</div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">No restaurants found</h3>
+                                <p className="text-gray-500">Try searching for something else</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
