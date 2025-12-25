@@ -1,107 +1,138 @@
-# KhaanaPeena - Food Ordering App
+# KhaanaPeena – Food Ordering Application (Frontend Assignment)
 
-A complete food ordering application built with React, HTML, CSS, and JavaScript. This app provides a seamless experience for browsing restaurants, viewing menus, managing cart, and placing orders.
+## Candidate Note
 
-## 🚀 Features
+This project was developed as part of the LenDenClub frontend assignment.
+While the original brief targets native Android (Kotlin) or iOS (Swift), I chose to implement the application as a web-based frontend using React, HTML, CSS, and JavaScript to demonstrate core product logic, UI/UX thinking, state management, and clean architecture concepts that are transferable across platforms.
 
-### ✅ Core Features
-- **Home Page**: Restaurant listing with search functionality and quick-add popular items
-- **Restaurant Menu Page**: Detailed menu with categorized items and add to cart
-- **Shopping Cart**: Complete cart management with quantity controls and persistence
-- **Checkout Page**: Order placement with delivery details and payment options
-- **Order History**: View past orders and order details
+All mandatory functional requirements outlined in the assignment have been implemented and mapped clearly below.
 
-### 🎨 UI/UX Features
-- **Responsive Design**: Works perfectly on mobile and desktop
-- **Modern Interface**: Clean, intuitive design with smooth animations
-- **Cart Indicators**: Red dot on cart icon showing item count
-- **Search Functionality**: Real-time restaurant filtering
-- **Cart Persistence**: Cart data saved in localStorage across pages
-- **Form Validation**: Comprehensive input validation
-- **Multi-page Navigation**: Seamless navigation between different sections
+## Why LenDenClub
 
-## 🏪 Restaurants & Menu
+LenDenClub’s focus on building impactful fintech products and empowering the next generation strongly resonates with my career goals. I am particularly inspired by the company’s emphasis on ownership, innovation, and building technology that solves real-world problems at scale.
 
-### Restaurants Available:
-1. **The Food Studio** - North Indian & Asian cuisine
-2. **180 Degrees** - International cuisine
-3. **Sigree Global Grill** - Barbecue & Indian
-4. **1441 Pizzeria** - Italian cuisine
-5. **Made in Punjab** - North Indian cuisine
-6. **The Irish House Malad** - Pub fare
+Through this assignment, I aimed to showcase not just technical implementation, but also attention to user experience, clean structure, and real product flow—qualities that align with LenDenClub’s engineering culture.
 
-### Popular Items (Quick Add from Home):
-- Chicken Tikka Kebab, Grilled Salmon, Chicken Malai Tikka
-- Margherita Pizza, Butter Chicken, Fish and Chips
+## Assignment Objective Alignment
 
-## 🛠️ Technical Implementation
+Assignment Goal:
+Develop a Food Ordering App with restaurant listing, menu viewing, cart management, and checkout flow.
 
-### Architecture
-- **Multi-page Application**: Separate HTML files for different sections
-- **React Components**: Modular component structure in each page
-- **Local Storage**: Persistent cart and order data
-- **CDN Dependencies**: React 18, Babel, Tailwind CSS
+Implementation Platform:
+Web application using React (component-based architecture)
 
-### Key Features
-- **Cart Management**: Add, remove, update quantities with visual feedback
-- **Order Processing**: Complete checkout flow with order confirmation
-- **Data Persistence**: Cart and orders saved locally
-- **Cross-page Navigation**: Consistent navigation with cart indicators
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
+## Implemented Features (Mapped to Mandatory Tasks)
 
-### Technologies Used
-- **React 18**: Component-based UI with hooks
-- **Tailwind CSS**: Utility-first styling framework
-- **Babel**: JavaScript transpilation for JSX
-- **LocalStorage API**: Client-side data persistence
-- **HTML5**: Semantic markup structure
+### 1. Home Screen – Restaurant Listing
 
-## 📱 How to Use
+Implemented features:
 
-1. **Browse Restaurants**: Open `index.html` to see all restaurants
-2. **Quick Add Items**: Click "ADD" on popular items to add to cart instantly
-3. **View Full Menu**: Click "View Menu" for complete restaurant menu
-4. **Manage Cart**: Cart icon shows item count - click to view/manage cart
-5. **Checkout**: Fill delivery details and select payment method
-6. **Order History**: View all your past orders on the orders page
+* Displays a list of restaurants with restaurant name, image, and cuisine type
+* Search bar to dynamically filter restaurants by name
+* Popular food items with quick add-to-cart functionality
 
-## 📁 Project Structure
+This screen acts as the entry point to the application and allows users to discover restaurants easily.
+
+### 2. Restaurant Menu Screen
+
+Implemented features:
+
+* Navigates to a dedicated menu page when a restaurant is selected
+* Displays food items with name, description, price, and image
+* Users can add menu items to the cart
+
+Menu data is structured per restaurant to simulate a real-world food ordering flow.
+
+### 3. Cart Screen
+
+Implemented features:
+
+* Displays all items added to the cart with item name, quantity, and individual price
+* Shows total cart value
+* Allows users to increase or decrease item quantity
+* Allows removal of items from the cart
+* “Proceed to Checkout” button for navigation
+
+Cart state persists across pages using browser localStorage.
+
+### 4. Checkout Screen
+
+Implemented features:
+
+* Input fields for name, email, and address
+* Input validation for empty or invalid values
+* “Place Order” button
+* Success confirmation message after order placement
+* Order details saved and visible in Order History
+
+## Optional Tasks
+
+* API integration was not implemented
+* Static and mock data were used to focus on UI flow, state management, and core logic
+* This decision was made to prioritize completion of all mandatory tasks within scope
+
+## Architecture & Code Structure
+
+* Component-based architecture using React
+* Clear separation of concerns between UI rendering and business logic
+* Persistent state handled using localStorage
+* Modular and readable code structure
+
+While not using MVVM or MVC explicitly due to the web platform, similar principles such as separation of logic and UI responsibility were followed.
+
+## Technologies Used
+
+* HTML
+* CSS
+* JavaScript
+* React
+
+## How to Build and Run
+
+1. Clone or download the repository
+2. Open `index.html` in a modern web browser
+3. Navigate through the app using the UI
+
+No additional setup or dependencies are required.
+
+## Project Structure
 
 ```
 KhaanaPeena/
-├── index.html          # Home page with restaurant listing
-├── menu.html           # Restaurant menu page
-├── cart.html           # Shopping cart management
-├── checkout.html       # Order checkout and payment
-├── orders.html         # Order history and details
-└── README.md           # Project documentation
+├── index.html        Home screen
+├── menu.html         Restaurant menu screen
+├── cart.html         Cart management
+├── checkout.html     Checkout screen
+├── orders.html       Order history
+└── README.md         Project documentation
 ```
 
-## 🎯 App Flow
+## Error Handling & Edge Cases
 
-1. **Home Page** → Browse restaurants, search, quick-add popular items
-2. **Menu Page** → View full menu, add items to cart
-3. **Cart Page** → Review items, adjust quantities, proceed to checkout
-4. **Checkout Page** → Enter delivery details, select payment, place order
-5. **Orders Page** → View order history and past orders
+* Empty cart handling
+* Quantity limits to prevent invalid values
+* Input validation on checkout fields
+* Graceful UI behavior for missing data
 
-## 🔧 Browser Compatibility
+## Assumptions & Limitations
 
-- Chrome 70+
-- Firefox 65+
-- Safari 12+
-- Edge 79+
-- Any modern browser with ES6+ support
+* Implemented as a web application instead of native mobile
+* Static or mock data used instead of APIs
+* No authentication or payment gateway integration
 
-## 📝 Key Features
+These decisions were made to focus on core functional requirements and UI flow clarity.
 
-- **No Backend Required**: Fully functional frontend-only application
-- **Offline Capable**: Works without internet (except for images)
-- **Data Persistence**: Cart and orders saved locally
-- **Responsive Design**: Optimized for all screen sizes
-- **Modern UX**: Smooth animations and intuitive interactions
+## Future Improvements
 
----
+* Backend and API integration
+* Real-time order tracking
+* Authentication and user profiles
+* Payment gateway support
+* Migration to native Android or iOS if required
 
-**Built with modern web technologies for a seamless food ordering experience**</content>
-<parameter name="filePath">c:\Users\shrey\OneDrive\Desktop\KhaanaPeena\README.md
+## Submission Notes
+
+* All mandatory tasks have been completed
+* Project demonstrates an end-to-end food ordering flow
+* Code is modular, readable, and well-structured
+* Suitable for extension into a native or full-stack application
