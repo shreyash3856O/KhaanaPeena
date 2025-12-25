@@ -40,6 +40,11 @@
                     return;
                 }
 
+                if (formData.phone.length < 10) {
+                    alert('Please enter a valid phone number (minimum 10 digits)');
+                    return;
+                }
+
                 const cart = getCart();
                 if (cart.items.length === 0) {
                     alert('Your cart is empty');
