@@ -20,6 +20,7 @@ Develop a Food Ordering App with restaurant listing, menu viewing, cart manageme
 
 Implementation Platform:
 Web application using React (component-based architecture)
+Application Link: https://khaanapeena.netlify.app/
 
 ## Implemented Features (Mapped to Mandatory Tasks)
 
@@ -136,3 +137,4 @@ These decisions were made to focus on core functional requirements and UI flow c
 * Project demonstrates an end-to-end food ordering flow
 * Code is modular, readable, and well-structured
 * Suitable for extension into a native or full-stack application
+
